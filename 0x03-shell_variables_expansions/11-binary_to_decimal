@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "Enter a binary number:"; read binary_number; echo "Decimal: $((2#$binary_number))"
+echo $((2#BINARY)o)
