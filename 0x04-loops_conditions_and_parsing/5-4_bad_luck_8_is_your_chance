@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# This script displays "Best School" 10 times, and on the 9th iteration, displays "Best School" and then "Hi" on a new line
+#Initialize counter
+i=0
+
+while [ "$i" -lt 10 ]; do
+	((i++))
+	
+	if [ "$i" -eq 4 ]; then
+		echo "bad luck"
+	elif [ "$i" -eq 8 ]; then
+		echo "good luck"
+	else
+		echo "Best School"
+	fi
+done
