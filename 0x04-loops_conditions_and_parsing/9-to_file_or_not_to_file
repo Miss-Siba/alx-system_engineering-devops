@@ -3,7 +3,7 @@
 
 file_path="school"
 
-if [ -e "file_path" ]; then
+if [ -e "$file_path" ]; then
 	echo "school file exists"
 
 		#check if file is empty
