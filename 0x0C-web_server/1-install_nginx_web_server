@@ -1,33 +1,22 @@
 #!/usr/bin/env bash
-# Configures a new ubuntu machine by installing
-# Nginx where it should be listening on port 80
-# Serve a page that would return a Hello World string
+# Configures a new Ubuntu machine by installing Nginx
+# Nginx should be explicitly set to listen on port 80 and serve a "Hello World!" page
 
-#updating and installing Nginx
-sudo apt-get update
-sudo apt-get install -y nginx
+echo "Updating and installing Nginx..."
+sudo apt-get update -y -qq && \
+sudo apt-get install nginx -y
 
-# starting nginx service
-sudo service nginx start
+# Backup the default Nginx configuration file
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
-# allowing nginx on firewall
-sudo ufw allow 'Nginx HTTP'
-
-# Give the user ownership to website files for easy editing
-sudo chown -R "$USER":"$USER" /var/www/html
-# Create the document root directory and index.html file
-sudo mkdir -p /var/www/html
-sudo touch /var/www/html/index.html
-sudo chmod 644 /var/www/html/index.html
-echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
-
+# Configure Nginx to listen on port 80 explicitly
 sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
 server {
-     listen      80;
-     listen      [::]:80 default_server;
-     root        /var/www/html;
-     index       index.html index.htm;
-     server_name _;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
 
     location / {
         try_files \$uri \$uri/ =404;
@@ -35,5 +24,18 @@ server {
 }
 EOF
 
-# Restarts the Nginx service to apply the configuration changes.
-service nginx -s reload
+echo "Allowing Nginx on firewall..."
+sudo ufw allow 'Nginx HTTP'
+
+echo "Setting ownership and permissions..."
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www/html
+
+echo "Creating 'Hello World!' page..."
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+echo "Reloading Nginx configuration..."
+sudo nginx -s reload
+
+echo "Nginx setup complete."
+
